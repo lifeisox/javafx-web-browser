@@ -1,0 +1,6 @@
+screenX=63.0
+screenY=7.0
+width=1024.0
+height=768.0
+homepage=http://www.google.ca
+downloadDirectory=
