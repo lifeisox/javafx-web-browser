@@ -17,7 +17,6 @@ public class Bookmark implements Serializable {
 	 * It is the constructor of Bookmark class
 	 * @param title It is a bookmark title.
 	 * @param url It is the URL of a bookmark.
-	 * @param icon It is the icon of a bookmark
 	 */
 	public Bookmark(String title, String url) {
 		this.title = title;

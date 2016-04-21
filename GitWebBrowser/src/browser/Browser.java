@@ -27,6 +27,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,7 +56,6 @@ public class Browser extends Region {
 	private boolean isHistoryListOpened;
 	private BorderPane root;
 	private List<BookmarkActionListener> bookmarkListeners;
-	private DownloadTask downloadTask;
     
     public Browser(String defaultURL, String downloadPath) {
     	this.defaultURL = defaultURL;
@@ -84,20 +84,40 @@ public class Browser extends Region {
 		// Browser Bar
 		MouseHandler myHandler = new MouseHandler();
 
+		final Tooltip backButtonTooltip = new Tooltip();
+		backButtonTooltip.setText(
+		    "If you click this button,\n" +
+		    "it will be show previous webpage."
+		);
 		backButton = new Button("Back");
 		backButton.disableProperty().bind(history.currentIndexProperty().lessThanOrEqualTo(0)); // Disable Condition
 		backButton.setOnMouseClicked(myHandler);
+		backButton.setTooltip(backButtonTooltip);
 		urlText = new TextField();
 		urlText.setOnMouseClicked(myHandler);
 		urlTextEvents();
 
+		final Tooltip bookmarkButtonTooltip = new Tooltip();
+		bookmarkButtonTooltip.setText(
+		    "If you click this button,\n" +
+		    "it will save current webpage to\n" +
+		    "bookmark."
+		);
 		bookmarkButton = new Button("Add Bookmark");
 		bookmarkButton.setDisable(true);
+		bookmarkButton.setTooltip(bookmarkButtonTooltip);
 		bookmarkButton.setOnMouseClicked(myHandler);
+		
+		final Tooltip nextButtonTooltip = new Tooltip();
+		nextButtonTooltip.setText(
+		    "If you click this button,\n" +
+		    "it will be show next webpage."
+		);
 		nextButton = new Button("Next");
 		nextButton.disableProperty().bind(
                 history.currentIndexProperty().greaterThanOrEqualTo(Bindings.size(history.getEntries()).subtract(1)));
 		nextButton.setOnMouseClicked(myHandler);
+		nextButton.setTooltip(nextButtonTooltip);
 		HBox browserBar = new HBox(backButton, urlText, bookmarkButton, nextButton);
 		HBox.setHgrow(urlText, Priority.ALWAYS);
 
@@ -177,12 +197,7 @@ public class Browser extends Region {
 			    if (downloadableFile != null) {  
 			    	int filenameIndex = newValue.lastIndexOf("/") + 1; // if file name is existed?
 			      	if (filenameIndex != 0) {
-			      		if (downloadTask == null) downloadTask = new DownloadTask();
-			      		else if (DownloadTask.downloadWindow == null) {
-			      			downloadTask = new DownloadTask();
-			      			
-			      		}
-			      		downloadTask.addDownloadTask(newValue, downloadPath);
+			      		try { new DownloadBar(newValue, downloadPath); } catch (Exception e) {};
 			      	}
 			    }
 			}
@@ -289,7 +304,6 @@ public class Browser extends Region {
 
 	/**
 	 * The animationList() method shows a small part of examples of JavaFX animation when "Show History" of Help menu is clicked.
-	 * @param is boolean value for whether "Show History" is checked or unchecked
 	 */
 	public void animationListDoor() {
 		if (!isHistoryListOpened) {

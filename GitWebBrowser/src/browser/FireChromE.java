@@ -43,7 +43,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class FireChromE extends Application {
-	private final String ICON_PATH = "/browser/BigHero.png";
+	private final String ICON_PATH = "/assignment3/BigHero.png";
 	private final String DEFAULT_FILE_PATH = "default.txt";
 	private final String BOOKMARK_FILE_PATH = "bookmark.txt";
 	private double stageX, stageY, stageWidth, stageHeight;
@@ -65,7 +65,9 @@ public class FireChromE extends Application {
 	 * 
 	 */
 	public static void main(String[] args) { launch(args); }
-
+	/**
+	 * the start() is the start point of all JavaFX program.
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		bookmarks = new ArrayList<Bookmark>();
@@ -83,7 +85,6 @@ public class FireChromE extends Application {
 		primaryStage.setOnCloseRequest(ev -> saveSettings());
 		primaryStage.show();
 	}
-
 	/**
 	 * The readSettings() reads default data and bookmarks saved.
 	 */
@@ -135,7 +136,10 @@ public class FireChromE extends Application {
 			if (fileReader != null) try { fileReader.close(); } catch (IOException e) {}
 		}
 	}
-
+	/**
+	 * The ReadBookmarkFile() reads bookmark data from bookmark.txt text file by streams of characters,
+	 * and saves them to bookmarks ArrayList.
+	 */
 	private void ReadBookmarkFile() {
 		File file = null;
 		FileInputStream fileInputStream = null;
@@ -161,17 +165,15 @@ public class FireChromE extends Application {
 			if (fileInputStream != null) try { fileInputStream.close(); } catch (IOException e) {}
 		}
 	}
-
 	/**
-	 * The readSettings() reads default data and bookmarks saved.
+	 * The saveSettings() saves default data and bookmark data.
 	 */
 	private void saveSettings() {
 		writeDefaultFile();
 		writeBookmarkFile();
 	}
 	/**
-	 * The WriteDefaultFile saves data of saved instance variables to default.txt text file 
-	 * by InputStream
+	 * The writeDefaultFile() saves data of saved instance variables to default.txt text file. 
 	 */
 	private void writeDefaultFile() {
 		FileWriter fileWriter = null;
@@ -201,8 +203,7 @@ public class FireChromE extends Application {
 		}
 	}
 	/**
-	 * The WriteBookmarkFile() saves data of saved bookmarks to bookmark.txt text file 
-	 * by InputStream.
+	 * The writeBookmarkFile() saves data of bookmarks ArrayLists to bookmark.txt text file. 
 	 */
 	private void writeBookmarkFile() {
 		FileOutputStream fileOutputStream = null;
@@ -221,11 +222,14 @@ public class FireChromE extends Application {
 			if (fileOutputStream != null) try { fileOutputStream.close(); } catch (IOException e) {}
 		}
 	}
-
+	/**
+	 * The createMainWindow() method is for composition of a scene. 
+	 * Most controls and layouts is created in the method. 
+	 */
 	private void createMainWindow() {
 		// File sub menu
 		final MenuItem newTab = new MenuItem("New Tab");
-		newTab.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+		newTab.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
 		newTab.setOnAction(e -> createNewBrowserTab());
 		final MenuItem quitMenu = new MenuItem("Quit");	// Quit Menu
 		quitMenu.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
@@ -235,18 +239,21 @@ public class FireChromE extends Application {
 		helpJavaMenu.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
 		helpJavaMenu.setOnAction(e -> search());
 		final CheckMenuItem showHistoryMenu = new CheckMenuItem("Show History"); //  Show History
-		showHistoryMenu.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+		showHistoryMenu.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
 		showHistoryMenu.setOnAction(e -> historyListOpenAndClose());
 		final MenuItem help3Menu = new MenuItem("About"); // About
 		help3Menu.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN));
 		help3Menu.setOnAction(e -> about());
 		// Javascript Menu
 		final MenuItem jsExeMenu = new MenuItem("Execute Code");
+		jsExeMenu.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.CONTROL_DOWN));
 		jsExeMenu.setOnAction(e -> executeJavaScript());
 		// Setting sub menu
 		final MenuItem homeMenu = new MenuItem("Homepage");	// Set Homepage URL
+		homeMenu.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
 		homeMenu.setOnAction(e -> setHomepageURL());
 		final MenuItem downloadPathMenu = new MenuItem("Download Path"); // Set Download Path
+		downloadPathMenu.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
 		downloadPathMenu.setOnAction(e -> setDownloadPath());
 
 		// Menu Bar
@@ -275,7 +282,9 @@ public class FireChromE extends Application {
 
 		scene = new Scene(root, stageWidth, stageHeight);
 	}
-	
+	/**
+	 * The createNewBrowserTab() method creates new tab for other web browser.
+	 */
 	private void createNewBrowserTab() {
 		Tab tab = new Tab("New Window");
 		if (tabPane.getTabs().size() == 0) tab.setClosable(false);
@@ -303,7 +312,9 @@ public class FireChromE extends Application {
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 	}
-
+	/**
+	 * The makeBookmarkMenu() adds the bookmark when user clicks the bookmark button on web browser in a tab.
+	 */
 	private void makeBookmarkMenu() {
 		Browser browser = (Browser) tabPane.getTabs().get(tabPane.getSelectionModel().getSelectedIndex()).getContent();
 		for (Bookmark bookmark : bookmarks) {
@@ -312,7 +323,6 @@ public class FireChromE extends Application {
 			bookmarkMenu.getItems().add(bookmarkMenuItem);
 		}
 	}
-
 	/**
 	 * The search() method shows the TextInputDialog control for searching something relate to Java in Google .
 	 */
@@ -321,13 +331,14 @@ public class FireChromE extends Application {
 		Browser browser = (Browser) tab.getContent();
 		browser.search();
 	}
-
+	/**
+	 * The historyListOpenAnsClose() opens and closes the history list on right side of window.
+	 */
 	private void historyListOpenAndClose() {
 		Tab tab = tabPane.getTabs().get(tabPane.getSelectionModel().getSelectedIndex());
 		Browser browser = (Browser) tab.getContent();
 		browser.animationListDoor();
 	}
-
 	/**
 	 * The about() method shows a simple Alert dialog box for showing information of this program.
 	 */
@@ -341,7 +352,9 @@ public class FireChromE extends Application {
 		stage.getIcons().add(new Image(ICON_PATH));
 		alert.showAndWait();
 	}
-
+	/**
+	 * The executeJavaScript() shows a dialog box for executing JavaScript code.
+	 */
 	private void executeJavaScript() {
 		TextInputDialog dialog = new TextInputDialog("alert(window.location)");
 		dialog.setTitle("Execute JavaScript");
@@ -357,7 +370,9 @@ public class FireChromE extends Application {
 			browser.executeJavaScript(result.get());
 		});
 	}
-	
+	/**
+	 * The setHomepageURL() shows a dialog box for setting the default homepage.
+	 */
 	private void setHomepageURL() {
 		TextInputDialog dialog = new TextInputDialog(defaultURL);
 		dialog.setTitle("Default URL");
@@ -375,7 +390,9 @@ public class FireChromE extends Application {
 			}
 		});
 	}
-
+	/**
+	 * The setDownloadPath() shows a dalog box for setting default download path.
+	 */
 	private void setDownloadPath() {
 		// Create the custom dialog.
 		Dialog<String> dialog = new Dialog<>();
@@ -473,7 +490,12 @@ public class FireChromE extends Application {
 			}
 		});
 	}
-
+	/**
+	 * The loadBookmark(String URL) calls the method that shows the web page 
+	 * that user clicks on the bookmark menu.
+	 * 
+	 * @param URL it is the Url of the bookmark menu a user clicks.
+	 */
 	private void loadBookmark(String URL) {
 		Browser browser = (Browser) tabPane.getTabs().get(tabPane.getSelectionModel().getSelectedIndex()).getContent();
 		browser.goURL(URL);
